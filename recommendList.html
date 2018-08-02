@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
+	<title>推荐列表</title>
+	<link rel="stylesheet" type="text/css" href="static/css/style.css">
+	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<div style="margin: 0 10px">
+		<div class="header" style="text-align: center;padding: 20px 0">我推荐的用户列表</div>
+		<div>
+			<div style="font-size: 14px;padding-bottom: 10px">总推荐人数：2</div>
+			<table id="ListTable" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>用户</td><td>注册日期</td><td>最近上线时间</td><td>本月已贡献积分</td>
+				</tr>
+				<tr>
+					<td>allen</td><td>2017-11-12</td><td>2018-08-01</td><td>288</td>
+				</tr>
+				<tr>
+					<td>bill</td><td>2017-08-08</td><td>2018-08-01</td><td>123</td>
+				</tr>
+				<tr>
+					<td>15501012532</td><td>2017-01-01</td><td>2018-08-01</td><td>66</td>
+				</tr>
+			</table>
+		</div>
+		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
+			<button class="recommendBtn" onclick="window.location.href='./recommendTo.html'">我要推荐</button>
+			<button class="recommendBtn" onclick="window.location.href='./recommendList.html'">我推荐的</button>
+			<button class="recommendBtn" onclick="window.location.href='./userInfo.html'" >我</button>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$("#ListTable tr").click(function(){
+		alert("详细信息")
+	})
+</script>
+</html>

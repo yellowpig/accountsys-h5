@@ -1,0 +1,92 @@
+html,body,form{
+	padding: 0px;
+	margin: 0px;
+}
+*{
+	font-family: "Microsoft YaHei";
+	font-weight: normal;
+	font-size: 18px;
+}
+/************Main************/
+.maincontent{
+	margin: 0 20px;
+	height: 100%;
+}
+.TopView{
+	width: 85%;
+	text-align: center;
+	margin: auto;
+	padding-bottom: 40px;
+}
+.SecView{
+	border-top:1.3px solid #666666;
+	text-align: center;
+	padding-top: 15px;
+}
+.header{
+	font-size: 1.5rem;
+	margin:auto;
+}
+.minlink{
+	font-size: 14px;
+	color:#0E6C9C
+}
+.accountDiv{
+	padding: 0 40px;
+}
+.inputBtn{
+	margin-top: 10px;
+	width: 100%;
+	font-size: 17px
+}
+.checkBtn{
+	text-align: left;
+	padding: 10px 0;
+	overflow: hidden;
+}
+#LoginBtn{
+	width: 100%;
+	border: 1px solid #DCDCDC;
+	border-radius: 5px;
+	background-color: #0099FF;
+	color:white;
+	line-height: 2rem;
+	font-weight: bold;
+	font-size: 1.3rem;
+}
+#LoginBtn:hover{
+	background-color: rgba(0,153,255,0.5);
+}
+/********Login************/
+.loginDiv{
+	padding: 20px 0;
+	border-bottom:1.3px solid #666666;
+}
+/***********recommendTo***************/
+.recommendBtn{
+	flex:1;
+	background-color: white;
+	border: 1px solid #666666;
+	border-radius: 5px;
+	font-size: 14px;
+	line-height: 2rem;
+}
+.recommendBtn:hover{
+	background-color: rgba(0,153,255,0.5);
+}
+/****************recommendList*****************/
+#ListTable{
+	border: 1px solid black;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	line-height: 1.5rem;
+	text-align: center;
+}
+#ListTable tr:hover{
+	background-color: rgba(220,220,220,0.5);
+}
+#ListTable td{
+	font-size: 12px;
+	border: 1px solid #C5C5C5;
+}

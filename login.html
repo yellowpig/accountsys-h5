@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="static/css/style.css">
+	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+	<div class="maincontent">
+		<div class="TopView">
+			<div class="header" style="padding: 50px 0 30px 0">微灵果账户管理平台</div>
+			<div class="accountDiv">
+				<form id="submitForm">
+					<input type="text" name="username" id="username" placeholder="用户名/手机/QQ/邮箱" class="inputBtn" required/>
+					<input type="text" name="password" id="password" placeholder="密码" class="inputBtn" required/>
+					<div class="checkBtn">
+						<div style="float: right;"><a href="/" class="minlink">忘记密码?</a></div>
+						<div>
+							<input type="checkbox" name="check" id="check"/>
+							<label for="check" style="font-size: 14px">下次自动登录</label>
+						</div>
+					</div>
+					<input id="LoginBtn" type="submit" value="登&nbsp&nbsp录"></button>
+					<div class="checkBtn">
+						<div style="float: right;"><a href="./register.html" class="minlink">免费注册</a></div>
+					</div>
+				</form>
+			<div style="display: table;">
+				<div style="display: table-cell;vertical-align: middle;font-size: 14px;">社交账号登录：</div>
+					<img src="./static/img/weichat.png" style="height: 35px" />
+				</div>
+			</div>
+		</div>
+		<div class="SecView">
+			<img src="./static/img/QRCode.png" style="height: 180px" />
+			<div><a href="/" class="minlink">扫码下载或点我直接下载微灵果</a></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+		$('#submitForm').submit(function(){
+		window.location.href="./recommendTo.html"
+		return false
+	});
+</script>
+</html>
