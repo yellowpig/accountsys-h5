@@ -32,10 +32,37 @@
 			<button class="recommendBtn" onclick="window.location.href='./userInfo.html'" >我</button>
 		</div>
 	</div>
+	<div id="vmodal">
+		<div id="vmodal_content" style="padding: 10px">
+			<div style="padding: 10px 0" class="header">
+			详细信息
+			</div>
+			<div style="border-top: 1px solid #DCDCDC;padding: 20px;text-align: left;">
+				<table>
+					<tr>
+						<td>用户：</td>
+						<td>Allen</td>
+					</tr>
+					<tr>
+						<td>中文名：</td>
+						<td>艾伦</td>
+					</tr>
+					<tr>
+						<td>注册日期：</td>
+						<td>2017-11-12</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
 </body>
 <script type="text/javascript">
 	$("#ListTable tr").click(function(){
-		alert("详细信息")
+		//alert("详细信息")
+		$('#vmodal').css("display","block")
+	})
+	$("#vmodal").click(function(){
+		$('#vmodal').css("display","none")
 	})
 </script>
 </html>

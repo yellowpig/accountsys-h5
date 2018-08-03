@@ -7,6 +7,67 @@
 	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-	
+	<div class="maincontent">
+		<div class="loginDiv">
+			<div style="padding-top: 20px;padding-bottom: 40px">
+				<div style="float: right;">
+					<img src="./static/img/portrait.png" style="height: 7rem;padding-top: 1rem;padding-right: 1rem" />
+				</div>
+				<table style="line-height: 2rem">
+					<tr><td>账号：Allen66</td></tr>
+					<tr><td>英文名：Allen</td></tr>
+					<tr><td>中文名：艾伦</td></tr>
+					<tr><td>性别：男</td></tr>
+				</table>
+				<div style="float: right;padding-right: 1rem">
+					<button class="infoBtn" style="width: 6rem;line-height: 1.5rem;">修改密码</button>
+				</div>
+			</div>
+		</div>
+			<div style="padding: 10px 0">
+				<table  style="line-height: 2rem;border-collapse: collapse;width: 100%">
+					<tr>
+						<td style="text-align: right;">现有积分：</td>
+						<td>123456789</td>
+						<td rowspan="2"><button class="infoBtn cubeBtn">积分商城</button></td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">上月入账积分：</td>
+						<td>666</td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">本月将入账积分：</td>
+						<td>88</td>
+						<td rowspan="2"><button class="infoBtn cubeBtn">购买积分</button></td>
+					</tr>
+					<tr style="border-bottom:2px solid #666666;">
+						<td style="text-align: right;">本月已入账积分：</td>
+						<td>66</td>
+					</tr>
+					<tr style="border-bottom:2px solid #666666;line-height: 4rem;border-top:2px solid #666666;">
+						<td style="text-align: right;">钻石：</td>
+						<td>66</td>
+						<td><button class="infoBtn cubeBtn" style="vertical-align: middle;">钻石商城</button></td>
+					</tr>
+					<tr style="border-top:2px solid #666666;">
+						<td style="text-align: right;">已推荐人数：</td>
+						<td>123</td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">本月推荐人数：</td>
+						<td>88</td>
+					</tr>
+					<tr>
+						<td style="text-align: right;">上月推荐人数：</td>
+						<td>66</td>
+					</tr>
+				</table>
+			</div>
+		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
+			<button class="recommendBtn" onclick="window.location.href='./recommendTo.html'">我要推荐</button>
+			<button class="recommendBtn" onclick="window.location.href='./recommendList.html'">我推荐的</button>
+			<button class="recommendBtn" onclick="window.location.href='./userInfo.html'" >我</button>
+		</div>
+	</div>
 </body>
 </html>
