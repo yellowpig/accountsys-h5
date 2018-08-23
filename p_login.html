@@ -9,13 +9,13 @@
 <body>
 	<div class="maincontent">
 		<div class="TopView">
-			<div class="header" style="padding: 50px 0 30px 0">微灵果账户管理平台</div>
+			<div class="p_header" style="padding: 50px 0 30px 0">微灵果账户管理平台</div>
 			<div class="accountDiv">
 				<form id="submitForm">
 					<input type="text" name="username" id="username" placeholder="用户名/手机/QQ/邮箱" class="inputBtn" required/>
 					<input type="text" name="password" id="password" placeholder="密码" class="inputBtn" required/>
 					<div class="checkBtn">
-						<div style="float: right;"><a href="/" class="minlink">忘记密码?</a></div>
+						<!-- <div style="float: right;"><a href="/" class="minlink">忘记密码?</a></div> -->
 						<div>
 							<input type="checkbox" name="check" id="check"/>
 							<label for="check" style="font-size: 14px">下次自动登录</label>
@@ -23,7 +23,7 @@
 					</div>
 					<input id="LoginBtn" type="submit" value="登&nbsp&nbsp录"></button>
 					<div class="checkBtn">
-						<div style="float: right;"><a href="./register.html" class="minlink">免费注册</a></div>
+						<div style="float: right;"><a href="./p_register.html" class="minlink">免费注册</a></div>
 					</div>
 				</form>
 			<div style="display: table;">
@@ -40,7 +40,7 @@
 </body>
 <script type="text/javascript">
 		$('#submitForm').submit(function(){
-		window.location.href="./recommendTo.html"
+		window.location.href="./p_recommendTo.html"
 		return false
 	});
 </script>

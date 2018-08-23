@@ -20,7 +20,7 @@
 					<tr><td>性别：男</td></tr>
 				</table>
 				<div style="float: right;padding-right: 1rem">
-					<button class="infoBtn" style="width: 6rem;line-height: 1.5rem;">修改密码</button>
+					<button class="infoBtn" style="width: 6rem;line-height: 1.5rem;" onclick="window.location.href='./p_changePasswd.html'">修改密码</button>
 				</div>
 			</div>
 		</div>
@@ -29,16 +29,12 @@
 					<tr>
 						<td style="text-align: right;">现有积分：</td>
 						<td>123456789</td>
-						<td rowspan="2"><button class="infoBtn cubeBtn">积分商城</button></td>
+						<td><button class="infoBtn cubeBtn" onclick="window.location.href='./p_pointDetail.html'">详情</button></td>
 					</tr>
 					<tr>
 						<td style="text-align: right;">上月入账积分：</td>
 						<td>666</td>
-					</tr>
-					<tr>
-						<td style="text-align: right;">本月将入账积分：</td>
-						<td>88</td>
-						<td rowspan="2"><button class="infoBtn cubeBtn">购买积分</button></td>
+						<td rowspan="2" style="border-bottom:2px solid #666666;"><button class="infoBtn cubeBtn" style="vertical-align: middle;">积分兑换</button></td>
 					</tr>
 					<tr style="border-bottom:2px solid #666666;">
 						<td style="text-align: right;">本月已入账积分：</td>
@@ -47,7 +43,7 @@
 					<tr style="border-bottom:2px solid #666666;line-height: 4rem;border-top:2px solid #666666;">
 						<td style="text-align: right;">钻石：</td>
 						<td>66</td>
-						<td><button class="infoBtn cubeBtn" style="vertical-align: middle;">钻石商城</button></td>
+						<td></td>
 					</tr>
 					<tr style="border-top:2px solid #666666;">
 						<td style="text-align: right;">已推荐人数：</td>
@@ -64,9 +60,9 @@
 				</table>
 			</div>
 		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
-			<button class="recommendBtn" onclick="window.location.href='./recommendTo.html'">我要推荐</button>
-			<button class="recommendBtn" onclick="window.location.href='./recommendList.html'">我推荐的</button>
-			<button class="recommendBtn" onclick="window.location.href='./userInfo.html'" >我</button>
+			<button class="recommendBtn" onclick="window.location.href='./p_recommendTo.html'">我要推荐</button>
+			<button class="recommendBtn" onclick="window.location.href='./p_downloadApp.html'">下载微灵果</button>
+			<button class="recommendBtn" onclick="window.location.href='./p_userInfo.html'" >我</button>
 		</div>
 	</div>
 </body>
