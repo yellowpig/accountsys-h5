@@ -3,15 +3,18 @@
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
 	<title>积分记录</title>
-	<link rel="stylesheet" type="text/css" href="static/css/style.css">
+	<link rel="stylesheet" type="text/css" href="static/p_style.css">
 
-	<link href="./static/vender/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="./static/vender/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<link href="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.css" rel="stylesheet">
 	<link href="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.css" rel="stylesheet">
 
-	<script src="http://code.jquery.com/jquery.js"></script>
-	<!-- <script src="./static/vender/bootstrap/js/bootstrap.js"></script> -->
+	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+	<!--jQuery cookie-->
+	<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
 	<!--bootstrapTable-->
 	<script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.js"></script>
@@ -32,32 +35,59 @@
 					<td style="width: 30%">起始时间</td>
 					<td style="padding-top: 0.5rem">
 						<div class="input-append date dateStart">
-		    				<input size="9" type="text" value="" style="background-color: white" readonly/>
+		    				<input type="text" value="" style="background-color: white;width: 65%" id="inputStart" readonly/>
 		   					<span class="add-on"><i class="icon-th"></i></span>
 						</div>
 						<script type="text/javascript">
+							var yesterDay=moment().add(-1,'days').format('YYYY-MM-DD')
 							 $(".dateStart").datepicker({
 		        				format: "yyyy-mm-dd",
-		        				language:"zh-CN"
-		    				});
+		        				language:"zh-CN",
+		        				autoclose:true,
+		        				setDate:yesterDay
+		    				}).on('changeDate',function(e){
+								var startTime = e.date;
+								var endTime=moment(startTime).add(6,'days').format('YYYY-MM-DD')
+								var currentTime=moment().format('YYYY-MM-DD')
+
+								console.log("startTime:"+startTime)
+								console.log("endTime:"+endTime)
+
+								if(endTime>currentTime){
+									//console.log("超过当前时间")
+									endTime=currentTime
+								}
+								//监听起始时间，设置结束时间的可选范围为起始时间的一周内
+								$('.dateEnd').datepicker('setStartDate',startTime);
+								$('.dateEnd').datepicker('setEndDate',endTime);
+								//设置结束时间的默认时间
+								$('.dateEnd').datepicker('setDate',startTime);
+							});
+
+							$('.dateStart').datepicker('setDate',yesterDay);
 						</script>
 					</td>
 					<td rowspan="2" style="padding-left: 10px">
-						<button class="infoBtn cubeBtn" style="vertical-align: middle;line-height: 4rem;width: 4.5rem">查询</button>
+						<button class="infoBtn cubeBtn" style="vertical-align: middle;line-height: 4.5rem;width: 5rem;border-color: #CCC"
+						 onclick="queryPointDetail()">查询</button>
 					</td>
 				</tr>
 				<tr>
 					<td style="width: 30%"s>结束时间</td>
 					<td style="padding-top: 0.5rem">
 						<div class="input-append date dateEnd">
-		    				<input size="9" type="text" style="background-color: white" value="" readonly/>
+		    				<input type="text" style="background-color: white;width: 65%" value="" readonly id="inputEnd"/>
 		   					<span class="add-on"><i class="icon-th"></i></span>
 						</div>
 						<script type="text/javascript">
-							 $(".dateEnd").datepicker({
+							var yesterDay=moment().add(-1,'days').format('YYYY-MM-DD')
+							$(".dateEnd").datepicker({
 		        				format: "yyyy-mm-dd",
-		        				language:"zh-CN"
+		        				language:"zh-CN",
+		        				autoclose:true
 		    				});
+		    				//默认日期为昨天
+							$('.dateEnd').datepicker('setDate',yesterDay);
 						</script>
 					</td>
 				</tr>
@@ -66,63 +96,164 @@
 			<div>
 				<table id="table" style="font-size: 14px;padding-top: 10px;border-collapse: collapse;" class="table table-striped table-bordered"></table>
 			</div>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
 		</div>
 		<!--footer-->
 		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
-			<button class="recommendBtn" onclick="window.location.href='./p_recommendTo.html'">我要推荐</button>
-			<button class="recommendBtn" onclick="window.location.href='./p_downloadApp.html'">下载微灵果</button>
-			<button class="recommendBtn" onclick="window.location.href='./p_userInfo.html'">我</button>
+			<button class="recommendBtn" onclick="jumpTo('recommendTo')">我要推荐</button>
+			<button class="recommendBtn" onclick="jumpTo('downloadApp')">下载微灵果</button>
+			<button class="recommendBtn" onclick="jumpTo('userInfo')">我</button>
 		</div>
 	</div>
 </body>
 <script type="text/javascript">
 $(function () {
+	var data=[{}]
+
+	//检查cookie
+	toastr.options = {
+		positionClass:"toast-top-center"
+	}
+
+	if(!uname){
+		toastr.error("登录失效，请重新登录")
+		setTimeout("window.location.href='./pc_login'",2000)
+	}
+
     //初始化Table
     var oTable = new TableInit();
-    oTable.Init();
+    oTable.Init(data);
 });
+
+
 
 var TableInit = function () {
     var oTableInit = new Object();
     //初始化Table
-    oTableInit.Init = function () {
-		$('#table').bootstrapTable({
+    oTableInit.Init = function (data) {
+    	var _data=data
+
+		$('#table').bootstrapTable('destroy').bootstrapTable({
 			cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             sortable: true,                     //是否启用排序
             sortName: 'date', 					//默认排序
             sortOrder: "asc",                   //排序方式
 
-					    columns: [{
-					        field: 'uname',
-					        title: '用户',
-					        sortable: true
-					    }, {
-					        field: 'date',
-					        title: '时间',
-					        sortable: true
-					    }, {
-					        field: 'point',
-					        title: '获得积分',
-					        sortable: true
-					    }, {
-					        field: 'reason',
-					        title: '原因',
-					        sortable: true
-					    }],
-					    data: [{
-					        uname: 'bllen',
-					        date: '2018-08-17',
-					        point: 30,
-					        reason:'活跃日'
-					    },{
-					        uname: 'cllen',
-					        date: '2018-08-13',
-					        point: 10,
-					        reason:'活跃日'
-					    }]
-					});
+            rowStyle:{
+            	css: {"font-size": "14px"}
+ 			},
+
+			columns: [{
+				field: 'uname',
+				title: '用户'
+			}, {
+				field: 'date',
+				title: '时间',
+				sortable: true,
+				cellStyle:{
+					css:{"font-size":"12px"}
+				}
+			}, {
+				field: 'point',
+				title: '积分',
+				sortable: true
+			}, {
+				field: 'reason',
+				title: '原因',
+				sortable: true,
+				cellStyle:{
+					css:{"font-size":"10px"}
+				}
+
+			}],
+				data: _data
+			})
     }
     return oTableInit;
 };
+
+var uname=$.cookie('uname')
+console.log('uname:'+uname)
+
+
+function jumpTo(page){
+	var page=page;
+	window.location.href='./pc_'+page+'?uname='+uname
+}
+
+//ajax提交数据
+function queryPointDetail(){
+	var startTime=$('#inputStart').val()
+	var endTime=$('#inputEnd').val()
+	var uname=$.cookie('uname')
+	var myUrl="./p_scorehistroy"
+	
+	$.get({
+		url:myUrl,
+		type:'get',
+		dataType:'json',
+		data:{
+			"uname":uname,
+			"date":"[\""+startTime+"\",\""+endTime+"\"]"
+		},
+		success:function(data,status){
+			console.log(data)
+
+			var querydata=dataProcess(data,startTime,endTime)
+
+
+			//初始化Table
+    		var oTable = new TableInit();
+    		oTable.Init(querydata);
+		}
+	})
+}
+
+function dataProcess(data,startTime,endTime){
+	var _data=data;
+	var _startTime=startTime;
+	var _endTime=endTime;
+	var _querydata=[]
+
+	for(var key in data){
+		$.each(data[key],function(i,n){
+			//console.log(n)
+			var _item={}
+
+			_item.uname=uname
+			_item.date=moment(n.DateTime).format('YYYY-MM-DD')
+			_item.point=n.incCredit
+			_item.reason=judgeReason(n.op)
+
+			//console.log(_item)
+			_querydata.push(_item)
+		})
+	}
+	return _querydata
+}
+
+function judgeReason(op){
+	var op=op
+	var reason
+
+	switch(op){
+		case 'inviteeActiveDay':
+			reason="直接下线达成活跃天"
+			break;
+		case 'inviteeActive':
+			reason="直接下线成为活跃用户"
+			break;
+		case 'invitee2ActiveDay':
+			reason="二级下线达成活跃天"
+			break;
+		case 'invitee2Active':
+			reason="二级下线成为活跃用户"
+			break;
+	}
+	return reason
+}
 </script>
 </html>

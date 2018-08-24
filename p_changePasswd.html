@@ -3,43 +3,103 @@
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
 	<title>修改密码</title>
-	<link rel="stylesheet" type="text/css" href="static/css/style.css">
+	<link rel="stylesheet" type="text/css" href="static/p_style.css">
+	<link href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.css" rel="stylesheet">
+
 	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 <body>
 	<div class="maincontent">
-		<div class="p_header" style="padding-top: 15px;text-align: center;margin: auto;">修改密码</div>
+		<div class="p_header" style="padding: 15px 0;text-align: center;margin: auto;">修改密码</div>
 		<form id="submitForm">
 			<div style="padding: 10px 0">
 				<table style="line-height: 2rem;margin:auto">
 					<tr>
 						<td><label for="username">用户名：</label></td>
-						<td><input type="text" name="username" id="username" placeholder="{{uname}}" disabled/></td>
+						<td><input type="text" name="username" id="username" disabled/></td>
 					</tr>
 					<tr>
 						<td><label for="password">原始密码：</label></td>
-						<td><input type="password" name="password" id="password" placeholder="6-20位" required="required"/></td>
+						<td><input type="password" name="password" id="opassword" placeholder="6-20位" required="required"/></td>
 					</tr>
 					<tr>
 						<td><label for="password2">新密码：</label></td>
-						<td><input type="password" name="password2" id="password2" placeholder="6-20位" required="required"/></td>
+						<td><input type="password" name="password2" id="npassword" placeholder="6-20位" required="required"/></td>
 					</tr>
 					<tr>
 						<td><label for="password2">确认密码：</label></td>
-						<td><input type="password" name="password2" id="password2" placeholder="6-20位，与上面一致" required="required"/></td>
+						<td><input type="password" name="password2" id="npassword2" placeholder="6-20位，与上面一致" required="required"/></td>
 					</tr>
 				</table>
+				<div class="check_alert"></div>
 			</div>
-			<div style="text-align: center;margin: auto;">
+			<div style="text-align: center;margin: auto;margin-top: 20px">
 				<input type="submit" name="submit" style="border:1px solid;border-radius: 5px;background-color: #0099FF;color:white;line-height: 2rem;width: 40%" value="确认修改"></button>
 			</div>
 		</form>
+
+		<!--footer-->
+		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
+			<button class="recommendBtn" onclick="jumpTo('recommendTo')">我要推荐</button>
+			<button class="recommendBtn" onclick="jumpTo('downloadApp')">下载微灵果</button>
+			<button class="recommendBtn" onclick="jumpTo('userInfo')">我</button>
+		</div>
 	</div>
 </body>
 <script type="text/javascript">
-	$('#submitForm').submit(function(){
-		window.location.href="./p_registerOK.html"
+var uname=$.cookie("uname")
+toastr.options = {
+	positionClass:"toast-top-center"
+}
+
+$(document).ready(function(){
+	$("#username").val(uname)
+})
+
+$('#submitForm').submit(function(){
+		$('.check_alert').hide()
+
+		var re_uname=$('#username').val()
+		var re_opasswd=$('#opassword').val()
+		var re_npasswd=$('#npassword').val()
+		var re_npasswd2=$('#npassword2').val()
+
+		if(re_npasswd===re_npasswd2){
+			var myUrl="/p_changepassword"
+
+			$.get({
+				url:myUrl,
+				type:'get',
+				dataType:'json',
+				data:{
+					"uname":re_uname,
+					"opasswd":re_opasswd,
+					"npasswd":re_npasswd
+				},
+				success:function(data,status){
+					console.log(data)
+					if(data.ret){
+						toastr.success("修改密码成功！")
+						window.location.href="./pc_userInfo?uname="+re_uname
+					}else{
+						toastr.error(data.msg);  
+					}
+				}
+			})
+
+
+		}else{
+			$('.check_alert').text("* 两次输入密码不一致").show()
+		}
+
 		return false
 	});
+
+function jumpTo(page){
+	var page=page;
+	window.location.href='./pc_'+page+'?uname='+uname
+}
 </script>
 </html>

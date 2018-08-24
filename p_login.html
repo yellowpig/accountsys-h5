@@ -3,27 +3,31 @@
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
 	<title>首页</title>
-	<link rel="stylesheet" type="text/css" href="static/css/style.css">
+	<link rel="stylesheet" type="text/css" href="static/p_style.css">
+	<link href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.css" rel="stylesheet">
+
 	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 <body>
 	<div class="maincontent">
 		<div class="TopView">
-			<div class="p_header" style="padding: 50px 0 30px 0">微灵果账户管理平台</div>
+			<div class="p_header" style="padding: 30px 0 30px 0">微灵果账户管理平台</div>
 			<div class="accountDiv">
-				<form id="submitForm">
+				<form id="submitForm" class="LoginForm">
 					<input type="text" name="username" id="username" placeholder="用户名/手机/QQ/邮箱" class="inputBtn" required/>
-					<input type="text" name="password" id="password" placeholder="密码" class="inputBtn" required/>
+					<input type="password" name="password" id="password" placeholder="密码" class="inputBtn" required/>
 					<div class="checkBtn">
 						<!-- <div style="float: right;"><a href="/" class="minlink">忘记密码?</a></div> -->
 						<div>
-							<input type="checkbox" name="check" id="check"/>
-							<label for="check" style="font-size: 14px">下次自动登录</label>
+							<input type="checkbox" name="autoLogin" id="autoLogin"/>
+							<label for="autoLogin" style="font-size: 14px">下次自动登录</label>
 						</div>
 					</div>
 					<input id="LoginBtn" type="submit" value="登&nbsp&nbsp录"></button>
 					<div class="checkBtn">
-						<div style="float: right;"><a href="./p_register.html" class="minlink">免费注册</a></div>
+						<div style="float: right;"><a href="./pc_register?inviter=" class="minlink">免费注册</a></div>
 					</div>
 				</form>
 			<div style="display: table;">
@@ -39,9 +43,74 @@
 	</div>
 </body>
 <script type="text/javascript">
-		$('#submitForm').submit(function(){
-		window.location.href="./p_recommendTo.html"
+	toastr.options = {
+		positionClass:"toast-top-center"
+	}
+
+	$('#submitForm').submit(function(){
+		var uname=$('#username').val()
+		var upasswd=$('#password').val()
+
+		ifAutoLogin(uname,upasswd)
+		ajaxLogin(uname,upasswd)
+
 		return false
 	});
+
+	$(document).ready(function(){
+		if($.cookie('deadLine')){
+			console.log("上次设置自动登录")
+			var uname=$.cookie('uname')
+			var upasswd=$.cookie('upasswd')
+
+			ajaxLogin(uname,upasswd)
+		}
+	})
+
+	function ifAutoLogin(name,password){
+		var uname=name
+		var upasswd=password
+
+		if($('#autoLogin').prop('checked')){
+			console.log("设置自动登录")
+			$.cookie('uname', uname, { expires: 15 });
+			$.cookie('upasswd', upasswd, { expires: 15 });
+			$.cookie('deadLine',true, { expires: 15 })
+		}else{
+			console.log("取消自动登录")
+			$.cookie('uname','', { expires: -1 });
+			$.cookie('upasswd','', { expires: -1 });
+			$.cookie('deadLine','', { expires: -1 })
+		}
+		
+	}
+
+	function ajaxLogin(name,password){
+		var uname=name
+		var upasswd=password
+		var myUrl="./p_login"
+
+		$.get({
+			url:myUrl,
+			type:'get',
+			dataType:'json',
+			data:{
+				"uname":uname,
+				"upasswd":upasswd
+			},
+			success:function(data,status){
+				//作为入口，添加cookie
+				$.cookie('uname',uname)
+				console.log('uname:'+$.cookie('uname'))
+
+				console.log(data)
+				if(data.ret){
+					window.location.href="./pc_recommendTo?uname="+uname
+				}else{
+					toastr.error(data.msg);  
+				}
+			}
+		})
+	}
 </script>
 </html>

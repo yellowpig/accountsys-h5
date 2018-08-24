@@ -3,24 +3,28 @@
 <head>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
 	<title>推荐列表</title>
-	<link rel="stylesheet" type="text/css" href="static/css/style.css">
+	<link rel="stylesheet" type="text/css" href="static/p_style.css">
+	<link href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.css" rel="stylesheet">
+	
 	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 </head>
 <body>
 	<div class="maincontent" style="padding-bottom:50px">
 		<div class="loginDiv">
-			<div style="padding-top: 20px;padding-bottom: 40px">
+			<div style="padding-top: 10px;padding-bottom: 40px">
 				<div style="float: right;">
-					<img src="./static/img/portrait.png" style="height: 7rem;padding-top: 1rem;padding-right: 1rem" />
+					<img src="./static/img/portrait.png" style="height: 7rem;padding-top: 1rem;" />
 				</div>
 				<table style="line-height: 2rem">
-					<tr><td>账号：Allen66</td></tr>
-					<tr><td>英文名：Allen</td></tr>
-					<tr><td>中文名：艾伦</td></tr>
-					<tr><td>性别：男</td></tr>
+					<tr><td>账号：{{uname}}</td></tr>
+					<tr><td id="name">英文名：</td></tr>
+					<tr><td id="cname">中文名：</td></tr>
+					<tr><td id="sex">性别：</td></tr>
 				</table>
-				<div style="float: right;padding-right: 1rem">
-					<button class="infoBtn" style="width: 6rem;line-height: 1.5rem;" onclick="window.location.href='./p_changePasswd.html'">修改密码</button>
+				<div style="float: right;">
+					<button class="infoBtn" style="width: 6rem;line-height: 1.5rem;" onclick="window.location.href='./pc_changePasswd'">修改密码</button>
 				</div>
 			</div>
 		</div>
@@ -28,42 +32,128 @@
 				<table  style="line-height: 2rem;border-collapse: collapse;width: 100%">
 					<tr>
 						<td style="text-align: right;">现有积分：</td>
-						<td>123456789</td>
-						<td><button class="infoBtn cubeBtn" onclick="window.location.href='./p_pointDetail.html'">详情</button></td>
+						<td>0</td>
+						<td style="text-align: right;">
+							<button class="infoBtn cubeBtn" onclick="window.location.href='./pc_pointDetail'">详情</button></td>
 					</tr>
 					<tr>
 						<td style="text-align: right;">上月入账积分：</td>
-						<td>666</td>
-						<td rowspan="2" style="border-bottom:2px solid #666666;"><button class="infoBtn cubeBtn" style="vertical-align: middle;">积分兑换</button></td>
+						<td>0</td>
+						<td rowspan="2" style="border-bottom:2px solid #666666;text-align: right;"><button class="infoBtn cubeBtn" style="vertical-align: middle;">积分兑换</button></td>
 					</tr>
 					<tr style="border-bottom:2px solid #666666;">
 						<td style="text-align: right;">本月已入账积分：</td>
-						<td>66</td>
+						<td>0</td>
 					</tr>
 					<tr style="border-bottom:2px solid #666666;line-height: 4rem;border-top:2px solid #666666;">
 						<td style="text-align: right;">钻石：</td>
-						<td>66</td>
+						<td id="diamond">0</td>
 						<td></td>
 					</tr>
 					<tr style="border-top:2px solid #666666;">
 						<td style="text-align: right;">已推荐人数：</td>
-						<td>123</td>
+						<td>0</td>
 					</tr>
 					<tr>
 						<td style="text-align: right;">本月推荐人数：</td>
-						<td>88</td>
+						<td>0</td>
 					</tr>
 					<tr>
 						<td style="text-align: right;">上月推荐人数：</td>
-						<td>66</td>
+						<td>0</td>
 					</tr>
 				</table>
 			</div>
+			<br/>
+			<div style="text-align: right;">
+				<a href="javascript:void(0)" onclick="LoginOut()">点击此处退出当前账号</a>
+			</div>
 		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
-			<button class="recommendBtn" onclick="window.location.href='./p_recommendTo.html'">我要推荐</button>
-			<button class="recommendBtn" onclick="window.location.href='./p_downloadApp.html'">下载微灵果</button>
-			<button class="recommendBtn" onclick="window.location.href='./p_userInfo.html'" >我</button>
+			<button class="recommendBtn" onclick="jumpTo('recommendTo')">我要推荐</button>
+			<button class="recommendBtn" onclick="jumpTo('downloadApp')">下载微灵果</button>
+			<button class="recommendBtn" style="background-color:  rgb(240,240,240)">我</button>
 		</div>
 	</div>
 </body>
+<script type="text/javascript">
+var uname=$.cookie('uname')
+console.log('uname:'+uname)
+
+function jumpTo(page){
+	var page=page;
+	window.location.href='./pc_'+page+'?uname='+uname
+}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var myUrl="./p_viewmyself"
+
+		//检查cookie
+		toastr.options = {
+			positionClass:"toast-top-center"
+		}
+
+		if(!uname){
+			toastr.error("登录失效，请重新登录")
+			setTimeout("window.location.href='./pc_login'",2000)
+		}else if(uname!==GetQueryString("uname")){
+			console.log("cookie和url不匹配")
+			toastr.warning("账号更换，请重新登录")
+			setTimeout("window.location.href='./pc_login'",1000)
+		}else{
+			console.log("当前账号匹配")
+		}
+		
+
+
+		//从/p_viewmyself接口获取用户信息
+		$.get({
+			url:myUrl,
+			type:'get',
+			dataType:'json',
+			data:{
+				"uname":uname
+			},
+			success:function(data,status){
+				if(data.ret){
+					var info=data.info
+
+					if(info.name){
+						$("#name").text("英文名："+info.name)
+					}else{
+						$("#name").text("英文名：无")
+					}
+					if(info.cname){
+						$("#cname").text("中文名："+info.cname)
+					}else{
+						$("#cname").text("中文名：无")
+					}
+
+					if(info.sex===1){
+						$("#sex").text("性别：男")
+					}else{
+						$("#sex").text("性别：女")
+					}
+					$("#diamond").text(info.diamond)
+				}
+			}
+		})
+	});
+
+	function GetQueryString(name){
+		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r!=null)
+			return unescape(r[2]); 
+		return null;
+	}
+
+	function LoginOut(){
+		var uname=$.cookie('uname','', { expires: -1 })
+		var upasswd=$.cookie('upasswd','', { expires: -1 })
+		var ifautoLogin=$.cookie('deadLine','', { expires: -1 })
+
+		window.location.href='./pc_login'
+	}
+</script>
 </html>
