@@ -13,13 +13,20 @@
 <body>
 	<div class="maincontent">
 		<div class="p_header" style="padding: 15px 0;text-align: center;margin: auto;">积分兑换</div>
-		<form id="submitForm">
+		<div style="width: 100%;overflow: hidden;">
+			<div style="float: right;width: 50%;margin:auto;text-align: center;border-left: 1px solid #969696;" onclick="jumpTo('store_buy_histroy')">兑换记录</div>
+			<div style="padding-right: 50%;margin:auto;text-align: center;">用户&nbsp;{{uname}}</div>	
+		</div>
+		<form id="submitForm" style="margin-top: 20px">
 			<div style="background-color: rgba(0,153,255,0.1);line-height: 2rem;padding:15px;border-radius:5px;">
 				<div>积分兑换电话卡：</div>
 				<div style="padding-left: 10%;">
-					<input type="radio" name="radio" value="1" id="radio1" checked><label for="radio1">电话卡10元</label><br>
-					<input type="radio" name="radio" value="2" id="radio2"><label for="radio2">电话卡50元</label><br>
-					<input type="radio" name="radio" value="3" id="radio3"><label for="radio3">电话卡100元</label><br>
+					<input type="radio" name="radio" value="10" id="radio1" checked>
+					<label for="radio1" style="margin-left: 10px">电话卡&nbsp;10元</label><br>
+					<input type="radio" name="radio" value="50" id="radio2">
+					<label for="radio2" style="margin-left: 10px">电话卡&nbsp;50元</label><br>
+					<input type="radio" name="radio" value="100" id="radio3">
+					<label for="radio3" style="margin-left: 10px">电话卡&nbsp;100元</label><br>
 				</div>
 			</div>
 			<div style="text-align: center;margin: auto;margin-top: 20px">
@@ -36,19 +43,54 @@
 	</div>
 </body>
 <script type="text/javascript">
-var uname=$.cookie("uname")
-toastr.options = {
-	positionClass:"toast-top-center"
-}
+$(document).ready(function(){
+	toastr.options = {
+		positionClass:"toast-top-center"
+	}
 
+	//检查cookie
+	toastr.options = {
+		positionClass:"toast-top-center"
+	}
+
+	if(!uname){
+		toastr.error("登录失效，请重新登录")
+		setTimeout("window.location.href='./pc_login'",2000)
+	}else if(uname!==GetQueryString("uname")){
+		console.log("cookie和url不匹配")
+		toastr.warning("账号更换，请重新登录")
+		setTimeout("window.location.href='./pc_login'",1000)
+	}else{
+		console.log("当前账号匹配")
+	}
+})
+</script>
+
+<script type="text/javascript">
+var uname=$.cookie("uname")
+
+//点击【兑换】按钮在此处向后台提交
 $('#submitForm').submit(function(){
-	window.location.href="./p_store_phone.html"
+	//获取单项值，目前是10，50，100
+	var telfare=$('input:radio:checked').val();
+	console.log(telfare)
+
+	window.location.href='./pc_store_phone_number?uname='+uname+'&item='+telfare
+	return false
 })
 
 
 function jumpTo(page){
 	var page=page;
 	window.location.href='./pc_'+page+'?uname='+uname
+}
+
+function GetQueryString(name){
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if(r!=null)
+		return unescape(r[2]); 
+	return null;
 }
 </script>
 </html>

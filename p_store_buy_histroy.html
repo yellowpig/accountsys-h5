@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" charset="UTF-8"/>
+	<title>积分兑换记录</title>
+	<link rel="stylesheet" type="text/css" href="static/p_style.css">
+
+	<link href="https://cdn.bootcss.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<link href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.css" rel="stylesheet">
+
+	<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+	<!--jQuery cookie-->
+	<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+	<!--bootstrapTable-->
+	<script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/locale/bootstrap-table-zh-CN.js"></script>
+
+	<!--bootstrapDatepicker-->
+	<script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+</head>
+<body style="padding:0">
+	<div class="maincontent">
+		<div class="p_header" style="text-align: center;padding: 20px 0">积分兑换记录</div>
+		<div>
+			<!--SelectTime-->
+			<table style="width: 100%">
+				<tr>
+					<td style="width: 30%">起始时间</td>
+					<td style="padding-top: 0.5rem">
+						<div class="input-append date dateStart">
+		    				<input type="text" value="" style="background-color: white;width: 65%" id="inputStart" readonly/>
+		   					<span class="add-on"><i class="icon-th"></i></span>
+						</div>
+						<script type="text/javascript">
+							var yesterDay=moment().add(-1,'days').format('YYYY-MM-DD')
+							 $(".dateStart").datepicker({
+		        				format: "yyyy-mm-dd",
+		        				language:"zh-CN",
+		        				autoclose:true,
+		        				setDate:yesterDay
+		    				}).on('changeDate',function(e){
+								var startTime = e.date;
+								var endTime=moment(startTime).add(6,'days').format('YYYY-MM-DD')
+								var currentTime=moment().format('YYYY-MM-DD')
+
+								console.log("startTime:"+startTime)
+								console.log("endTime:"+endTime)
+
+								if(endTime>currentTime){
+									//console.log("超过当前时间")
+									endTime=currentTime
+								}
+								//监听起始时间，设置结束时间的可选范围为起始时间的一周内
+								$('.dateEnd').datepicker('setStartDate',startTime);
+								$('.dateEnd').datepicker('setEndDate',endTime);
+								//设置结束时间的默认时间
+								$('.dateEnd').datepicker('setDate',startTime);
+							});
+
+							$('.dateStart').datepicker('setDate',yesterDay);
+						</script>
+					</td>
+					<td rowspan="2" style="padding-left: 10px">
+						<button class="infoBtn cubeBtn" style="vertical-align: middle;line-height: 4.5rem;width: 5rem;border-color: #CCC"
+						 onclick="queryStorebuyhistroy()">查询</button>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 30%"s>结束时间</td>
+					<td style="padding-top: 0.5rem">
+						<div class="input-append date dateEnd">
+		    				<input type="text" style="background-color: white;width: 65%" value="" readonly id="inputEnd"/>
+		   					<span class="add-on"><i class="icon-th"></i></span>
+						</div>
+						<script type="text/javascript">
+							var yesterDay=moment().add(-1,'days').format('YYYY-MM-DD')
+							$(".dateEnd").datepicker({
+		        				format: "yyyy-mm-dd",
+		        				language:"zh-CN",
+		        				autoclose:true
+		    				});
+		    				//默认日期为昨天
+							$('.dateEnd').datepicker('setDate',yesterDay);
+						</script>
+					</td>
+				</tr>
+			</table>
+			<!--PointList-->
+			<div>
+				<table id="table" style="font-size: 14px;padding-top: 10px;border-collapse: collapse;" class="table table-striped table-bordered"></table>
+			</div>
+			<br/>
+			<br/>
+			<br/>
+			<br/>
+		</div>
+		<!--footer-->
+		<div style="position: fixed;bottom:0;left: 0;right: 0;display: flex;width: 100%">
+			<button class="recommendBtn" onclick="jumpTo('recommendTo')">我要推荐</button>
+			<button class="recommendBtn" onclick="jumpTo('downloadApp')">下载微灵果</button>
+			<button class="recommendBtn" onclick="jumpTo('userInfo')">我</button>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+$(function () {
+	var data=[{}]
+
+	//设置toastr插件显示位置
+	toastr.options = {
+		positionClass:"toast-top-center"
+	}
+
+	//检查cookie
+	if(!uname){
+		toastr.error("登录失效，请重新登录")
+		setTimeout("window.location.href='./pc_login'",2000)
+	}else if(uname!==GetQueryString("uname")){
+		console.log("cookie和url不匹配")
+		toastr.warning("账号更换，请重新登录")
+		setTimeout("window.location.href='./pc_login'",1000)
+	}else{
+		console.log("当前账号匹配")
+	}
+
+    //初始化Table
+    var oTable = new TableInit();
+    oTable.Init(data);
+});
+
+
+
+var TableInit = function () {
+    var oTableInit = new Object();
+    //初始化Table
+    oTableInit.Init = function (data) {
+    	var _data=data
+
+		$('#table').bootstrapTable('destroy').bootstrapTable({
+			cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            sortable: true,                     //是否启用排序
+            sortName: 'date', 					//默认排序
+            sortOrder: "asc",                   //排序方式
+
+            rowStyle:{
+            	css: {"font-size": "14px"}
+ 			},
+
+			columns: [{
+				field: 'DateTime',
+				title: '时间',
+				sortable: true,
+				cellStyle:{
+					css:{"font-size":"12px"}
+				}
+			},
+			{	field:'buy_item',
+				title:'兑换内容',
+				sortable:true
+			},
+			{
+				field: 'phonenumber',
+				title: '电话号',
+				sortable: true,
+				cellStyle:{
+					css:{"font-size":"10px"}
+				}
+			}],
+				data: _data
+			})
+    }
+    return oTableInit;
+};
+
+var uname=$.cookie('uname')
+console.log('uname:'+uname)
+
+
+function jumpTo(page){
+	var page=page;
+	window.location.href='./pc_'+page+'?uname='+uname
+}
+
+//ajax提交数据
+function queryStorebuyhistroy(){
+	var startTime=$('#inputStart').val()+" 0:0:0"
+	var endTime=$('#inputEnd').val()+" 23:59:59"
+	var uname=$.cookie('uname')
+	var myUrl="./p_store_buy_histroy"
+	
+	$.get({
+		url:myUrl,
+		type:'get',
+		dataType:'json',
+		data:{
+			"uname":uname,
+			"bDate":startTime,
+			"eDate":endTime
+		},
+		success:function(data,status){
+			//此处将接口拿到的数据直接传值给table渲染
+			//如果想对table的数据处理，应该在此处对data进行预处理后再赋值给querydata
+			//可以参考p_pointDetail.html页
+			var querydata=data
+			//console.log(querydata)
+
+			//初始化Table
+    		var oTable = new TableInit();
+    		oTable.Init(querydata);
+		}
+	})
+}
+
+//获取url中uname值
+	function GetQueryString(name){
+		var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if(r!=null)
+			return unescape(r[2]); 
+		return null;
+	}
+</script>
+</html>

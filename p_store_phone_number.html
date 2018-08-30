@@ -14,17 +14,17 @@
 	<div class="maincontent">
 		<div class="p_header" style="padding: 15px 0;text-align: center;margin: auto;">积分兑换</div>
 		<form id="submitForm">
-			<div style="padding: 150px 0 50px 0">
+			<div style="padding: 100px 0 70px 0">
 				<table style="line-height: 2rem;margin:auto">
 					<tr>
-						<td><label for="username">请输入电话：</label></td>
-						<td><input type="text" name="username" id="username"/></td>
+						<td><label for="phonenumber">请输入电话：</label></td>
+						<td><input type="text" name="phonenumber" id="phonenumber" required/></td>
 					</tr>
 				</table>
 				<div class="check_alert"></div>
 			</div>
 			<div style="text-align: center;margin: auto;margin-top: 20px">
-				<input type="submit" name="submit" style="border:1px solid;border-radius: 5px;background-color: #0099FF;color:white;line-height: 2rem;width: 40%" value="确定兑换"></button>
+				<input type="submit" name="submit" style="border:1px solid;border-radius: 5px;background-color: #0099FF;color:white;line-height: 2rem;width: 40%" value="申请兑换"></button>
 			</div>
 		</form>
 
@@ -37,15 +37,77 @@
 	</div>
 </body>
 <script type="text/javascript">
-var uname=$.cookie("uname")
-toastr.options = {
-	positionClass:"toast-top-center"
-}
+$(document).ready(function(){
+	//检查cookie
+	toastr.options = {
+		positionClass:"toast-top-center"
+	}
 
+	if(!uname){
+		toastr.error("登录失效，请重新登录")
+		setTimeout("window.location.href='./pc_login'",2000)
+	}else if(uname!==GetQueryString("uname")){
+		console.log("cookie和url不匹配")
+		toastr.warning("账号更换，请重新登录")
+		setTimeout("window.location.href='./pc_login'",1000)
+	}else{
+		console.log("当前账号匹配")
+	}
+})
+</script>
+
+<script type="text/javascript">
+var uname=$.cookie("uname")
+
+//点击【申请兑换】按钮在此处向后台提交
+$('#submitForm').submit(function(){
+	var phonenumber=$('#phonenumber').val()
+	if(phonenumber.length===11){
+		//ajax
+		var myUrl="./p_store_buy"//@TODO 此处接口待修改
+
+			$.get({
+				url:myUrl,
+				type:'get',
+				dataType:'json',
+				data:{
+					//此处填写get请求的参数
+					"uname":uname,
+					"item":"{{item}}",
+					"phonenumber":phonenumber
+				},
+				success:function(data,status){
+					//var jData = JSON.parse(data)
+					console.log(data)
+					if(true == data.ret) {
+						//@TODO 提交成功后操作
+						//提交成功后跳转到userinfo页面
+						jumpTo('userInfo');
+					}
+					else {
+						toastr.warning(data.msg);
+					}
+					return false;
+				}
+			})
+
+	}else{
+		toastr.warning("电话号码位数有误!")
+	}
+	return false
+})
 
 function jumpTo(page){
 	var page=page;
 	window.location.href='./pc_'+page+'?uname='+uname
+}
+
+function GetQueryString(name){
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if(r!=null)
+		return unescape(r[2]); 
+	return null;
 }
 </script>
 </html>
